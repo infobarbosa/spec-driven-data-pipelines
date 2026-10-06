@@ -42,39 +42,64 @@ No **Spec-Driven Development (SDD)**:
 
 ---
 
-## 2. Preparação do Ambiente (Zero-Friction no GitHub Codespaces)
+## 2. Preparação do Ambiente: Um Workspace 100% Limpo
 
-Este laboratório foi projetado para execução imediata no **GitHub Codespaces**, eliminando qualquer atrito de instalação local de Java, Spark ou dependências.
+Para garantir que a experiência seja didática e que o agente de IA não seja influenciado por arquivos pré-existentes, **o aluno deve iniciar a prática em um diretório totalmente limpo**. 
 
-### Opção 1: GitHub Codespaces (Recomendado)
+- Este repositório (`spec-driven-data-pipelines`) serve como **guia de consulta** (roteiro da aula, checkpoints e instruções).
+- O seu projeto prático será criado do zero dentro de uma pasta dedicada (`top-10-clientes/`), contendo inicialmente apenas os dados de entrada e as ferramentas instaladas.
 
-1. No repositório deste laboratório no GitHub, clique no botão verde **Code** -> aba **Codespaces** -> **Create codespace on main**.
-2. O ambiente iniciará automaticamente no navegador via VS Code for Web.
-3. O arquivo [devcontainer.json](.devcontainer/devcontainer.json) já prepara em segundo plano:
-   - Python 3.11 e OpenJDK 17 Headless.
-   - Instalação de `pyspark`, `pytest`, `ruff`, `black`, `pyyaml` e `build`.
-   - Download automático dos datasets de clientes e pedidos.
+### 2.1 Onde executar o laboratório
 
-### Opção 2: Ambiente Local ou Container
+Você pode executar o laboratório em qualquer um dos seguintes ambientes:
 
-Se preferir rodar no terminal local ou container Docker próprio:
+* **Opção A — GitHub Codespaces (Recomendado):**  
+  Crie um Codespace limpo via [github.com/codespaces/new](https://github.com/codespaces/new) (selecionando um repositório vazio ou template padrão de Python).
+* **Opção B — Container Docker Oficial de Engenharia de Dados:**  
+  Execute o container da disciplina com PySpark, Java e `code-server` prontos:
+  ```sh
+  docker run -d \
+    --name data-eng-lab \
+    -p 8080:8080 \
+    ghcr.io/infobarbosa/data-eng-lab-docker-image:latest
+  ```
+  Acesse `http://localhost:8080` no navegador.
+* **Opção C — Terminal / Máquina Local:**  
+  Utilize seu terminal local com Python 3.10+ e Java 17/21 configurados.
+
+---
+
+### 2.2 Criando a pasta limpa do projeto e baixando os datasets
+
+No terminal do seu ambiente limpo (Codespaces, container ou máquina local), prepare a pasta de trabalho:
 
 ```sh
-# 1. Clonar o repositório
-git clone https://github.com/infobarbosa/spec-driven-data-pipelines.git
-cd spec-driven-data-pipelines
+# 1. Criar e entrar na pasta limpa do projeto
+mkdir -p top-10-clientes/data/{input,output}
+cd top-10-clientes
 
-# 2. Criar e ativar ambiente virtual Python
-python3 -m venv .venv
-source .venv/bin/activate
-
-# 3. Instalar dependências
-pip install --upgrade pip
+# 2. Instalar dependências de suporte (se já não estiverem instaladas no ambiente)
 pip install pyspark pytest ruff black pyyaml build
 
-# 4. Baixar os datasets de exemplo
-bash download-datasets.sh
+# 3. Baixar os datasets de teste
+git clone https://github.com/infobarbosa/dataset-json-clientes ./data/input/dataset-json-clientes
+git clone https://github.com/infobarbosa/datasets-csv-pedidos ./data/input/datasets-csv-pedidos
 ```
+
+### 2.3 Estado Inicial do Workspace
+
+Neste ponto, o seu explorador de arquivos no VS Code deve conter **estritamente** a estrutura abaixo:
+
+```text
+top-10-clientes/
+└── data/
+    ├── input/
+    │   ├── dataset-json-clientes/
+    │   └── datasets-csv-pedidos/
+    └── output/
+```
+
+Nenhum arquivo de código, nenhum arquivo de checkpoint e nenhum arquivo de configuração existe ainda. O projeto nasce limpo.
 
 ---
 
