@@ -1,0 +1,30 @@
+{
+  "name": "Spec-Driven Data Pipelines (PySpark + GenAI)",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "17",
+      "installJdk": true
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.testing.pytestEnabled": true,
+        "editor.formatOnSave": true
+      },
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "charliermarsh.ruff",
+        "tamasfe.even-better-toml",
+        "redhat.vscode-yaml",
+        "github.copilot",
+        "github.copilot-chat"
+      ]
+    }
+  },
+  "postCreateCommand": "pip install --upgrade pip && pip install pyspark pytest ruff black pyyaml build && bash download-datasets.sh",
+  "remoteUser": "vscode"
+}

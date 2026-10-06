@@ -1,0 +1,57 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Pytest / Coverage / Linters
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# PySpark / Hadoop local logs
+metastore_db/
+derby.log
+spark-warehouse/
+*.log
+
+# Data directories (keep directory structure if needed, ignore large datasets)
+data/input/dataset-json-clientes/
+data/input/datasets-csv-pedidos/
+data/output/
+
+# OS and Editor artifacts
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+*.swo
