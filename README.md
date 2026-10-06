@@ -410,9 +410,10 @@ Independentemente do seu ponto de partida — seja dando os primeiros passos nes
 - **Engenharia de Software Moderna** (Marco Tulio Valente): Excelente referência nacional sobre princípios fundamentais de engenharia de software, testes automatizados e design orientado a objetos.
 
 ### Metodologia e Desenvolvimento com IA
-- **Spec-Driven Development (SDD):** Adoção de especificações formais (`AGENTS.md`, `.github/copilot-instructions.md`, `.cursorrules`) como contratos de governança para modelos de linguagem.
-- **Plan-First Workflow:** Padrão arquitetural em que agentes de codificação submetem planos estruturados de impacto antes de modificar arquivos do repositório.
-- **Shift-Left em Pipelines de Dados:** Princípio de antecipar a validação de regras de negócio, tipagem estrita e testes automatizados para as etapas iniciais de especificação.
+- [Spec-Driven Development: From Code to Contract in the Age of AI Coding Assistants](https://arxiv.org/abs/2602.00180): Artigo acadêmico de referência sobre a transição do foco em código manual para o desenvolvimento orientado a contratos e especificações formais com assistentes de IA.
+- [Spec-Driven Development in 2026: What It Is, the Tooling, and How Teams Actually Use It](https://dev.to/krlz/spec-driven-development-in-2026-what-it-is-the-tooling-and-how-teams-actually-use-it-2fk2): Artigo prático cobrindo o estado da arte das ferramentas de mercado, padrões de governança (`AGENTS.md`) e como times de engenharia aplicam a metodologia no dia a dia.
+- **Plan-First Workflow:** Padrão arquitetural em que agentes de codificação elaboram e submetem um plano detalhado antes de realizar alterações físicas em arquivos do repositório.
+- **Shift-Left em Pipelines de Dados:** Prática de antecipar a validação de regras de negócio, tipagem de schemas e critérios de aceite para a fase de especificação prévia.
 
 ### Documentação Oficial e Ferramentas
 - [Apache Spark — Documentação Oficial](https://spark.apache.org/docs/latest/): Configurações, APIs de DataFrames e SQL, e boas práticas de tuning.
