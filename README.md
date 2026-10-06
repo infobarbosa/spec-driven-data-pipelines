@@ -42,64 +42,22 @@ No **Spec-Driven Development (SDD)**:
 
 ---
 
-## 2. Preparação do Ambiente: Um Workspace 100% Limpo
+## 2. Preparação do Ambiente e Datasets
 
-Para garantir que a experiência seja didática e que o agente de IA não seja influenciado por arquivos pré-existentes, **o aluno deve iniciar a prática em um diretório totalmente limpo**. 
-
-- Este repositório (`spec-driven-data-pipelines`) serve como **guia de consulta** (roteiro da aula, checkpoints e instruções).
-- O seu projeto prático será criado do zero dentro de uma pasta dedicada (`top-10-clientes/`), contendo inicialmente apenas os dados de entrada e as ferramentas instaladas.
-
-### 2.1 Onde executar o laboratório
-
-Você pode executar o laboratório em qualquer um dos seguintes ambientes:
-
-* **Opção A — GitHub Codespaces (Recomendado):**  
-  Crie um Codespace limpo via [github.com/codespaces/new](https://github.com/codespaces/new) (selecionando um repositório vazio ou template padrão de Python).
-* **Opção B — Container Docker Oficial de Engenharia de Dados:**  
-  Execute o container da disciplina com PySpark, Java e `code-server` prontos:
-  ```sh
-  docker run -d \
-    --name data-eng-lab \
-    -p 8080:8080 \
-    ghcr.io/infobarbosa/data-eng-lab-docker-image:latest
-  ```
-  Acesse `http://localhost:8080` no navegador.
-* **Opção C — Terminal / Máquina Local:**  
-  Utilize seu terminal local com Python 3.10+ e Java 17/21 configurados.
-
----
-
-### 2.2 Criando a pasta limpa do projeto e baixando os datasets
-
-No terminal do seu ambiente limpo (Codespaces, container ou máquina local), prepare a pasta de trabalho:
+No terminal do seu ambiente (GitHub Codespaces, container Docker ou máquina local), execute os comandos abaixo para preparar o projeto, instalar as dependências e baixar os datasets:
 
 ```sh
-# 1. Criar e entrar na pasta limpa do projeto
+# 1. Criar a estrutura de pastas e acessar o projeto
 mkdir -p top-10-clientes/data/{input,output}
 cd top-10-clientes
 
-# 2. Instalar dependências de suporte (se já não estiverem instaladas no ambiente)
+# 2. Instalar dependências
 pip install pyspark pytest ruff black pyyaml build
 
-# 3. Baixar os datasets de teste
+# 3. Baixar os datasets de entrada
 git clone https://github.com/infobarbosa/dataset-json-clientes ./data/input/dataset-json-clientes
 git clone https://github.com/infobarbosa/datasets-csv-pedidos ./data/input/datasets-csv-pedidos
 ```
-
-### 2.3 Estado Inicial do Workspace
-
-Neste ponto, o seu explorador de arquivos no VS Code deve conter **estritamente** a estrutura abaixo:
-
-```text
-top-10-clientes/
-└── data/
-    ├── input/
-    │   ├── dataset-json-clientes/
-    │   └── datasets-csv-pedidos/
-    └── output/
-```
-
-Nenhum arquivo de código, nenhum arquivo de checkpoint e nenhum arquivo de configuração existe ainda. O projeto nasce limpo.
 
 ---
 
