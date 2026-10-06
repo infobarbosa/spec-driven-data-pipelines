@@ -427,3 +427,41 @@ Independentemente do seu ponto de partida — seja dando os primeiros passos nes
 - [GitHub Blog — AI & Developer Experience](https://github.blog/): Casos de uso reais, métricas de produtividade e evolução de agentes de inteligência artificial aplicados ao ciclo de vida de desenvolvimento de software.
 - [PEP 8 — Style Guide for Python Code](https://peps.python.org/pep-0008/): Guia oficial de estilo de código para a linguagem Python.
 
+---
+
+## Apêndice — E quando o AGENTS.md fica grande demais? A Cadeia de Especificações Modulares
+
+Em projetos corporativos com múltiplos pipelines e tabelas, manter todas as definições em um único arquivo `AGENTS.md` pode gerar acoplamento de responsabilidades. Em uma equipe multidisciplinar, uma pergunta fundamental surge: **quem revisa o quê?**
+
+- A liderança de **Negócios** valida a intenção estratégica e o valor gerado.
+- A equipe de **Analytics** valida regras de cálculo, fórmulas de agregação e desempate.
+- Os **Analistas e Engenheiros de Dados** validam contratos de schemas, tipos, particionamento e integridade.
+- A equipe de **QA / Testes** valida os critérios de aceite e cenários de borda.
+- A equipe de **Engenharia de Software** valida arquitetura, separação de camadas, empacotamento e qualidade local.
+
+### A Solução: Decomposição em Specs Modulares
+
+Para viabilizar governança clara no versionamento e otimizar a janela de contexto dos modelos de IA, a abordagem recomendada é dividir a especificação em arquivos especializados:
+
+```text
+meu-projeto/
+├── specs/
+│   ├── 01-intencao-de-negocio.md    # [Negócios] Contexto, impacto e objetivos
+│   ├── 02-regras-e-metricas.md      # [Analytics] Fórmulas, grão e desempate
+│   ├── 03-contratos-de-dados.md     # [Eng. Dados] Schemas estritos e caminhos de I/O
+│   └── 04-criterios-de-aceite.md    # [QA/Engenharia] Cenários para suíte de testes
+├── AGENTS.md                        # [Engenharia] Orquestrador técnico enxuto e DoD
+└── src/                             # Código da aplicação
+```
+
+### O Ganho Prático na Interação com a IA
+
+Com especificações modulares:
+1. **Pull Requests com donos claros:** Cada área revisa apenas o arquivo que lhe compete no repositório (`CODEOWNERS`).
+2. **Contexto sob demanda:** O assistente de IA é alimentado apenas com a especificação necessária para a tarefa do momento, reduzindo ruído e melhorando a precisão da resposta.
+3. **Reconciliação focada:** Se uma regra analítica mudar, edita-se apenas `specs/02-regras-e-metricas.md` e solicita-se ao agente:
+   ```text
+   As regras em @specs/02-regras-e-metricas.md foram atualizadas. 
+   Reconcilie a camada de transformação e os testes unitários preservando os contratos de dados de @specs/03-contratos-de-dados.md.
+   ```
+
