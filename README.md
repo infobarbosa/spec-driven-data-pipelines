@@ -469,87 +469,166 @@ Com especificações modulares:
 
 ### Exemplo Prático: O Projeto Top 10 Clientes Decomposto
 
-Abaixo está a demonstração de como o nosso projeto do laboratório seria estruturado segundo essa abordagem modular, separando com clareza o papel e a revisão de cada área:
+Abaixo está a demonstração de como o nosso projeto do laboratório seria estruturado segundo essa abordagem modular, definindo no próprio corpo de cada documento a persona responsável, o escopo de atuação e os critérios de validação:
 
-#### 1. `specs/01-intencao-de-negocio.md` (Revisado pela área de Negócios / PO)
+#### 1. `specs/01-intencao-de-negocio.md`
 ```markdown
-# Intenção de Negócio — Top 10 Clientes
+# 01 — Intenção de Negócio (Briefing Estratégico)
 
-## Objetivo Estratégico
-Identificar os 10 clientes com maior volume financeiro de compras no e-commerce para subsidiar o programa de fidelidade e relacionamento comercial.
+| Metadado | Definição |
+| :--- | :--- |
+| **Persona Responsável** | Product Owner (PO) / Liderança Comercial |
+| **Revisores Obrigatórios** | Head de CRM e Gerente de E-commerce |
+| **Status** | Aprovado (v1.0) |
+| **Papel na Cadeia SDD** | Define a motivação estratégica, metas e impacto de negócio (o *porquê*) |
 
-## Perguntas que este pipeline responde:
-- Quem são os nossos 10 maiores compradores históricos?
-- Qual o volume financeiro acumulado por cada um desses clientes?
+## 1. Contexto e Motivação
+A área comercial do e-commerce está estruturando o programa anual de fidelidade para os maiores compradores da plataforma. Para direcionar benefícios exclusivos (como cashback diferenciado e atendimento prioritário), a equipe precisa de visibilidade exata sobre a concentração de faturamento na base de clientes.
+
+## 2. Perguntas-Chave de Negócio
+- Quem são os 10 clientes com maior volume financeiro acumulado?
+- Qual é o volume financeiro acumulado por cada um desses clientes?
+- O ranking é consistente e confiável para fins de auditoria de campanhas?
+
+## 3. Critérios de Sucesso do Produto
+- **Determinismo:** O ranking deve produzir exatamente o mesmo resultado a cada execução para a mesma base histórica.
+- **Auditoria:** Cada cliente classificado deve possuir histórico de compras comprovado.
+- **Fora de Escopo:** Segmentação geográfica ou filtros de categoria de produto não fazem parte desta versão.
 ```
 
-#### 2. `specs/02-regras-e-metricas.md` (Revisado pela equipe de Analytics)
+#### 2. `specs/02-regras-e-metricas.md`
 ```markdown
-# Regras Analíticas e Métricas — Top 10 Clientes
+# 02 — Regras Analíticas e Métricas
 
-## 1. Métrica de Ranqueamento
-- Valor do item: `VALOR_UNITARIO * QUANTIDADE`.
-- Valor total gasto: soma (`SUM`) de todos os pedidos válidos do cliente.
+| Metadado | Definição |
+| :--- | :--- |
+| **Persona Responsável** | Analytics Engineer / Analista de BI |
+| **Revisores Obrigatórios** | Analista de Negócios e Engenheiro de Dados |
+| **Status** | Aprovado (v1.0) |
+| **Papel na Cadeia SDD** | Define fórmulas de cálculo, granularidade e lógica de desempate (o *quê*) |
 
-## 2. Regra de Desempate (Determinismo)
-- 1º critério: `valor_total_gasto` em ordem DECRESCENTE (`DESC`).
-- 2º critério: `id_cliente` em ordem CRESCENTE (`ASC`) como critério determinístico de desempate.
+## 1. Grão e Granularidade Analítica
+- **Grão de Entrada (Pedidos):** Linha de item de pedido (`ID_PEDIDO`, `PRODUTO`).
+- **Grão de Saída (Relatório):** Um registro por cliente único (`id_cliente`).
 
-## 3. Filtros Analíticos
-- Apenas clientes com compras ativas no período (Inner Join).
-- Limite exato de 10 clientes no relatório final.
+## 2. Fórmulas e Regras de Agregação
+- **Valor por Item:** `VALOR_UNITARIO * QUANTIDADE`.
+- **Gasto Total Acumulado:** Soma financeira (`SUM`) de todas as linhas de pedido válidas associadas ao cliente:
+  $$\text{valor\_total\_gasto} = \sum (\text{VALOR\_UNITARIO} \times \text{QUANTIDADE})$$
+
+## 3. Política de Ranqueamento e Desempate
+Para garantir determinismo em ambiente distribuído (Apache Spark):
+1. **1º Critério:** `valor_total_gasto` em ordem DECRESCENTE (`DESC`).
+2. **2º Critério (Desempate Mandatório):** `id_cliente` em ordem CRESCENTE (`ASC`).
+
+## 4. Regras de Inclusão e Filtros
+- **Apenas Compradores Ativos:** Clientes cadastrados que não possuam nenhum pedido registrado NÃO devem figurar no ranking (uso obrigatório de `Inner Join`).
+- **Tamanho do Corte:** O ranking deve retornar no máximo 10 registros (ou a totalidade de compradores se a base tiver menos de 10).
 ```
 
-#### 3. `specs/03-contratos-de-dados.md` (Revisado pela Engenharia de Dados)
+#### 3. `specs/03-contratos-de-dados.md`
 ```markdown
-# Contratos de Dados — Top 10 Clientes
+# 03 — Contratos de Dados e Interfaces Técnicas
 
-## Datasets de Entrada
-- **Clientes (JSON comprimido):** `data/input/dataset-json-clientes/data/clientes.json.gz`
-  - Campos necessários: `id` (Long), `nome` (String).
-- **Pedidos (CSV comprimido, sep ';'):** `data/input/datasets-csv-pedidos/data/pedidos/*.csv.gz`
-  - Campos necessários: `ID_CLIENTE` (Long), `VALOR_UNITARIO` (Double), `QUANTIDADE` (Integer).
+| Metadado | Definição |
+| :--- | :--- |
+| **Persona Responsável** | Engenheiro(a) de Dados / Arquiteto(a) de Dados |
+| **Revisores Obrigatórios** | Analytics Engineer e Engenheiro de Plataforma |
+| **Status** | Aprovado (v1.0) |
+| **Papel na Cadeia SDD** | Formaliza schemas estritos, formatos físicos, partições e integridade (com *quais dados*) |
 
-## Contrato do Dataset de Saída
-- **Destino:** `data/output/top_10_clientes` (caminho gerenciado via `config/config.yaml`).
-- **Schema Estrito:**
-  - `id_cliente`: LongType (não-nulo)
-  - `nome_cliente`: StringType (não-nulo)
-  - `valor_total_gasto`: DoubleType (não-nulo)
+## 1. Interface de Entrada (Sources)
+- **Dataset de Clientes:**
+  - Formato: JSON comprimido (`clientes.json.gz`).
+  - Caminho: gerenciado via parâmetro `datasets.clientes` em `config/config.yaml`.
+  - Campos obrigatórios: `id` (Long, PK), `nome` (String).
+- **Dataset de Pedidos:**
+  - Formato: Diretório com múltiplos CSV comprimidos (`.csv.gz`, sep `;`, header presente).
+  - Caminho: gerenciado via parâmetro `datasets.pedidos` em `config/config.yaml`.
+  - Campos obrigatórios: `ID_CLIENTE` (Long, FK), `VALOR_UNITARIO` (Double), `QUANTIDADE` (Integer).
+
+## 2. Contrato de Saída (Sink Schema)
+- **Destino:** Salvo no diretório configurado em `config/config.yaml` (`output.caminho`).
+- **Schema Estrito (PySpark StructType):**
+  - `id_cliente`: `LongType` (Nullable = False)
+  - `nome_cliente`: `StringType` (Nullable = False)
+  - `valor_total_gasto`: `DoubleType` (Nullable = False)
+
+## 3. Invariantes de Integridade
+- **Integridade Referencial:** Pedidos com `ID_CLIENTE` ausente na base cadastral de clientes devem ser descartados.
+- **Validação de Nulos:** Nenhuma coluna do DataFrame final pode conter valores `NULL` ou `NaN`.
 ```
 
-#### 4. `specs/04-criterios-de-aceite.md` (Revisado por QA / Testes)
+#### 4. `specs/04-criterios-de-aceite.md`
 ```markdown
-# Critérios de Aceite para Testes Automatizados
+# 04 — Critérios de Aceite para Testes Automatizados
 
-A camada de transformações puras deve ser validada por uma suíte `pytest` com dados sintéticos em memória cobrindo os seguintes cenários:
+| Metadado | Definição |
+| :--- | :--- |
+| **Persona Responsável** | QA / Engenheiro(a) de Qualidade de Dados (SDET) |
+| **Revisores Obrigatórios** | Analytics Engineer e Engenheiro de Software |
+| **Status** | Aprovado (v1.0) |
+| **Papel na Cadeia SDD** | Formaliza asserções de teste automatizado e massas sintéticas (*como provar*) |
 
-- **CA1 (Cálculo Financeiro):** Dado um cliente com múltiplos pedidos, valida se a soma total confere com `Σ(VALOR_UNITARIO * QUANTIDADE)`.
-- **CA2 (Desempate Determinístico):** Dados dois clientes com gasto idêntico, o de menor `id_cliente` deve anteceder o de maior ID no ranking.
-- **CA3 (Filtro de Inativos):** Cliente cadastrado sem pedidos vinculados NÃO deve constar no resultado.
-- **CA4 (Tamanho do Ranking):** Havendo mais de 10 compradores válidos, o retorno deve conter exatamente 10 registros.
+## 1. Diretriz de Execução da Suíte
+Os testes devem ser implementados com `pytest` em `tests/test_vendas_transforms.py`, gerando DataFrames em memória via `spark.createDataFrame` (execução hermética sem leitura de disco).
+
+## 2. Critérios de Aceite Obrigatórios (DoD de Testes)
+
+### CA1 — Exatidão da Métrica Financeira
+- **Dado:** Um cliente com 2 pedidos (Item A: R$ 100,00 x 2; Item B: R$ 50,00 x 3).
+- **Quando:** O pipeline calcular o total gasto.
+- **Então:** O `valor_total_gasto` retornado deve ser exatamente R$ 350,00.
+
+### CA2 — Desempate Determinístico sob Empate Perfeito
+- **Dado:** Cliente A (`id_cliente = 10`) e Cliente B (`id_cliente = 2`), ambos com gasto de R$ 1.000,00.
+- **Quando:** O ranking for ordenado.
+- **Então:** O Cliente B (`id_cliente = 2`) deve anteceder o Cliente A na ordenação.
+
+### CA3 — Exclusão de Clientes Sem Compras
+- **Dado:** Um cliente cadastrado na base cadastral que possui zero pedidos vinculados.
+- **Quando:** A transformação cruzar pedidos e clientes.
+- **Então:** Esse cliente NÃO deve constar em nenhuma posição do DataFrame final.
+
+### CA4 — Cumprimento do Limite de Linhas
+- **Dado:** Uma massa sintética com 15 clientes distintos que realizaram compras.
+- **Quando:** A ordenação e corte forem aplicados.
+- **Então:** O DataFrame de saída deve conter exatamente 10 linhas.
 ```
 
 #### 5. `AGENTS.md` (O Manifesto Técnico Enxuto do Repositório)
 ```markdown
-# AGENTS.md — Pipeline Top 10 Clientes
+# AGENTS.md — Manifesto do Repositório e Governança Técnica
 
-## 1. Visão Geral e Especificações
-Este projeto implementa o pipeline Top 10 Clientes em PySpark. As regras e contratos estão modularizados na pasta `specs/`:
-- Intenção de negócio: `@specs/01-intencao-de-negocio.md`
-- Regras de cálculo e desempate: `@specs/02-regras-e-metricas.md`
-- Contratos de schema e dados: `@specs/03-contratos-de-dados.md`
-- Critérios de aceite: `@specs/04-criterios-de-aceite.md`
+| Metadado | Definição |
+| :--- | :--- |
+| **Persona Responsável** | Engenheiro(a) de Software / Tech Lead |
+| **Revisores Obrigatórios** | Time de Engenharia de Dados |
+| **Status** | Aprovado (v1.0) |
+| **Papel na Cadeia SDD** | Orquestra a cadeia de specs, impõe arquitetura, linters e padrões de entrega (*como construir*) |
 
-## 2. Diretrizes Arquiteturais
-- Estrutura modular em `src/`: `core/`, `utils/`, `data_io/`, `transforms/`, `jobs/`, `main.py` (Composition Root).
-- Transformações puras sem chamadas diretas de I/O nem dependência direta da `SparkSession`.
-- Centralização de caminhos de arquivos em `config/config.yaml`.
+## 1. Cadeia de Especificações (Fonte da Verdade)
+O comportamento funcional e os contratos deste repositório são governados exclusivamente pelos documentos em `specs/`:
+- Intenção Estratégica: `@specs/01-intencao-de-negocio.md`
+- Lógica de Negócio e Ranqueamento: `@specs/02-regras-e-metricas.md`
+- Contratos de Dados e Schemas: `@specs/03-contratos-de-dados.md`
+- Critérios de Aceite e Asserções: `@specs/04-criterios-de-aceite.md`
 
-## 3. Qualidade e Definição de Pronto (DoD)
-- Testes unitários com `pytest` em dados sintéticos na memória (`make test`).
-- Verificação de estilo com `black` e `ruff` (`make lint`).
-- Empacotamento em `dist/` via `pyproject.toml` (`make package`).
-- Pipeline executando via `spark-submit ./src/main.py`.
+## 2. Diretrizes de Arquitetura e Engenharia
+- **Estrutura Modular em `src/`:**
+  - `src/core/`: Leitura de configurações e exceções customizadas.
+  - `src/utils/`: Gerenciamento de SparkSession (`SparkManager`) e logging.
+  - `src/data_io/`: Camada de I/O desacoplada (`DataIOManager`).
+  - `src/transforms/`: Classes de transformações analíticas puras (recebem e retornam DataFrames, sem I/O direto).
+  - `src/jobs/`: Orquestração do pipeline.
+  - `src/main.py`: Composition Root e injeção de dependências.
+- **Config-Driven:** Nenhum caminho físico deve estar no código; utilizar `config/config.yaml`.
+
+## 3. Definição de Pronto (DoD)
+Antes de submeter código para produção, o agente de IA deve garantir:
+1. 100% dos testes unitários passando em memória (`make test`).
+2. Conformidade total de formatação e lint com `black` e `ruff` (`make lint`).
+3. Empacotamento válido da biblioteca via `pyproject.toml` (`make package`).
+4. Pipeline executando ponta a ponta via `spark-submit ./src/main.py`.
 ```
 
