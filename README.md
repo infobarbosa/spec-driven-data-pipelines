@@ -465,3 +465,91 @@ Com especificações modulares:
    Reconcilie a camada de transformação e os testes unitários preservando os contratos de dados de @specs/03-contratos-de-dados.md.
    ```
 
+---
+
+### Exemplo Prático: O Projeto Top 10 Clientes Decomposto
+
+Abaixo está a demonstração de como o nosso projeto do laboratório seria estruturado segundo essa abordagem modular, separando com clareza o papel e a revisão de cada área:
+
+#### 1. `specs/01-intencao-de-negocio.md` (Revisado pela área de Negócios / PO)
+```markdown
+# Intenção de Negócio — Top 10 Clientes
+
+## Objetivo Estratégico
+Identificar os 10 clientes com maior volume financeiro de compras no e-commerce para subsidiar o programa de fidelidade e relacionamento comercial.
+
+## Perguntas que este pipeline responde:
+- Quem são os nossos 10 maiores compradores históricos?
+- Qual o volume financeiro acumulado por cada um desses clientes?
+```
+
+#### 2. `specs/02-regras-e-metricas.md` (Revisado pela equipe de Analytics)
+```markdown
+# Regras Analíticas e Métricas — Top 10 Clientes
+
+## 1. Métrica de Ranqueamento
+- Valor do item: `VALOR_UNITARIO * QUANTIDADE`.
+- Valor total gasto: soma (`SUM`) de todos os pedidos válidos do cliente.
+
+## 2. Regra de Desempate (Determinismo)
+- 1º critério: `valor_total_gasto` em ordem DECRESCENTE (`DESC`).
+- 2º critério: `id_cliente` em ordem CRESCENTE (`ASC`) como critério determinístico de desempate.
+
+## 3. Filtros Analíticos
+- Apenas clientes com compras ativas no período (Inner Join).
+- Limite exato de 10 clientes no relatório final.
+```
+
+#### 3. `specs/03-contratos-de-dados.md` (Revisado pela Engenharia de Dados)
+```markdown
+# Contratos de Dados — Top 10 Clientes
+
+## Datasets de Entrada
+- **Clientes (JSON comprimido):** `data/input/dataset-json-clientes/data/clientes.json.gz`
+  - Campos necessários: `id` (Long), `nome` (String).
+- **Pedidos (CSV comprimido, sep ';'):** `data/input/datasets-csv-pedidos/data/pedidos/*.csv.gz`
+  - Campos necessários: `ID_CLIENTE` (Long), `VALOR_UNITARIO` (Double), `QUANTIDADE` (Integer).
+
+## Contrato do Dataset de Saída
+- **Destino:** `data/output/top_10_clientes` (caminho gerenciado via `config/config.yaml`).
+- **Schema Estrito:**
+  - `id_cliente`: LongType (não-nulo)
+  - `nome_cliente`: StringType (não-nulo)
+  - `valor_total_gasto`: DoubleType (não-nulo)
+```
+
+#### 4. `specs/04-criterios-de-aceite.md` (Revisado por QA / Testes)
+```markdown
+# Critérios de Aceite para Testes Automatizados
+
+A camada de transformações puras deve ser validada por uma suíte `pytest` com dados sintéticos em memória cobrindo os seguintes cenários:
+
+- **CA1 (Cálculo Financeiro):** Dado um cliente com múltiplos pedidos, valida se a soma total confere com `Σ(VALOR_UNITARIO * QUANTIDADE)`.
+- **CA2 (Desempate Determinístico):** Dados dois clientes com gasto idêntico, o de menor `id_cliente` deve anteceder o de maior ID no ranking.
+- **CA3 (Filtro de Inativos):** Cliente cadastrado sem pedidos vinculados NÃO deve constar no resultado.
+- **CA4 (Tamanho do Ranking):** Havendo mais de 10 compradores válidos, o retorno deve conter exatamente 10 registros.
+```
+
+#### 5. `AGENTS.md` (O Manifesto Técnico Enxuto do Repositório)
+```markdown
+# AGENTS.md — Pipeline Top 10 Clientes
+
+## 1. Visão Geral e Especificações
+Este projeto implementa o pipeline Top 10 Clientes em PySpark. As regras e contratos estão modularizados na pasta `specs/`:
+- Intenção de negócio: `@specs/01-intencao-de-negocio.md`
+- Regras de cálculo e desempate: `@specs/02-regras-e-metricas.md`
+- Contratos de schema e dados: `@specs/03-contratos-de-dados.md`
+- Critérios de aceite: `@specs/04-criterios-de-aceite.md`
+
+## 2. Diretrizes Arquiteturais
+- Estrutura modular em `src/`: `core/`, `utils/`, `data_io/`, `transforms/`, `jobs/`, `main.py` (Composition Root).
+- Transformações puras sem chamadas diretas de I/O nem dependência direta da `SparkSession`.
+- Centralização de caminhos de arquivos em `config/config.yaml`.
+
+## 3. Qualidade e Definição de Pronto (DoD)
+- Testes unitários com `pytest` em dados sintéticos na memória (`make test`).
+- Verificação de estilo com `black` e `ruff` (`make lint`).
+- Empacotamento em `dist/` via `pyproject.toml` (`make package`).
+- Pipeline executando via `spark-submit ./src/main.py`.
+```
+
