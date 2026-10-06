@@ -15,7 +15,7 @@
 
 Nas aulas anteriores da disciplina, construímos manualmente um pipeline PySpark seguindo 14 passos de engenharia de software: schemas explícitos, separação de I/O, classes de transformação pura, injeção de dependências, tratamento de erros, empacotamento e testes com PyTest.
 
-O objetivo deste laboratório é dar o **próximo salto profissional**: aprender a atuar como **Arquiteto e Revisor Técnico**, orquestrando agentes de IA generativa para projetar, refatorar, testar e manter essa mesma arquitetura com velocidade de mercado e rigor corporativo.
+O objetivo deste laboratório é conectar esse aprendizado com o uso prático de IA generativa: aprender a orientar o assistente de código para projetar, refatorar, testar e manter essa mesma arquitetura de forma ágil, consistente e com rigor técnico.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
@@ -32,7 +32,7 @@ O objetivo deste laboratório é dar o **próximo salto profissional**: aprender
 
 ### O que é Spec-Driven Development (SDD)?
 
-No fluxo tradicional e ingênuo com IA (prompt ad-hoc), o desenvolvedor conversa com o chat pedindo código solto. O resultado são scripts descartáveis, regras de negócio adivinhadas pela IA e falta de rastreabilidade.
+No fluxo mais comum e direto com IA (o prompt ad-hoc), o desenvolvedor conversa com o chat pedindo código solto. O resultado muitas vezes são scripts descartáveis, regras de negócio adivinhadas pela IA e falta de rastreabilidade.
 
 No **Spec-Driven Development (SDD)**:
 1. **O arquivo de especificação (`AGENTS.md`) é a única fonte da verdade**: Regras de negócio, contratos de schema, restrições arquiteturais e critérios de aceite residem no repositório.
@@ -116,7 +116,7 @@ O script provavelmente executará e exibirá dados no console. No entanto, anali
    - Todos os caminhos de arquivo estão fixos no código (*hardcoded*).
    - Não há separação de camadas nem como testar a regra sem instanciar leitura de disco.
 
-> **Conclusão do Passo 1:** A IA generativa sem especificações formais comporta-se como um desenvolvedor júnior apressado: gera código que roda no caso feliz, mas insere regras implícitas e débito técnico imediato.
+> **Conclusão do Passo 1:** Sem uma especificação formal, a IA preenche as lacunas com premissas próprias. O código pode até funcionar no cenário básico, mas traz regras implícitas, falta de determinismo e acoplamento desnecessário.
 
 ---
 
@@ -385,18 +385,18 @@ Abra o arquivo de teste e inspecione o diff gerado:
 
 ## 6. Parabéns!
 
-Você concluiu com sucesso o laboratório de **Spec-Driven Data Pipelines com PySpark e GenAI**!
+Você concluiu o laboratório de **Spec-Driven Data Pipelines com PySpark e GenAI**!
 
-Nas aulas anteriores de [pyspark-poo](https://github.com/infobarbosa/pyspark-poo), você aprendeu a construir cada camada na unha, entendendo o porquê de cada decisão técnica: schemas explícitos, separação de I/O, classes de transformação puras, injeção de dependências e testes automatizados.
+Nas aulas anteriores do projeto [pyspark-poo](https://github.com/infobarbosa/pyspark-poo), trabalhamos a estrutura de um pipeline passo a passo: a razão de cada schema explícito, a separação de leitura e escrita, as transformações puras e os testes automatizados.
 
-Neste laboratório, você deu o **salto qualitativo para o papel de Tech Lead e Arquiteto**:
-- **Superou o prompt amador:** Viu na prática como a IA sem restrições introduz ordenações não-determinísticas e código acoplado.
-- **Formalizou contratos com Shift-Left:** Transformou regras de negócio, critérios de desempate e schemas em especificações versionadas no `AGENTS.md`.
-- **Governou o processo via Plan Mode:** Forçou a IA a estruturar e aprovar o raciocínio antes de alterar qualquer arquivo de código.
-- **Conquistou testes de alta fidelidade:** Usou a IA para gerar suítes completas de testes unitários em memória com `pytest`, cobrindo múltiplos cenários de aceite em segundos.
-- **Vivenciou o poder da reconciliação:** Atualizou requisitos em produção e viu o pipeline se adaptar de ponta a ponta sem necessidade de reescrever código manualmente.
+Neste laboratório, você colocou tudo isso em prática com o apoio de ferramentas de IA generativa, experimentando um fluxo de trabalho moderno e estruturado:
+- **Observou o comportamento da IA sem restrições:** Compreendeu por que prompts diretos e sem contexto geram soluções frágeis ou com regras de negócio implícitas.
+- **Trabalhou com especificações claras:** Utilizou o `AGENTS.md` para registrar contratos de dados, regras determinísticas de desempate e critérios de aceite.
+- **Adotou o modo planejamento:** Experimentou o valor de avaliar a proposta da IA antes de aplicar qualquer alteração aos arquivos.
+- **Construiu testes de alta fidelidade:** Usou a IA para gerar testes unitários com dados sintéticos em memória, validando múltiplos cenários de negócio em segundos.
+- **Experimentou a reconciliação prática:** Viu como atualizar um requisito na especificação permite adaptar o código e os testes de forma rápida e segura.
 
-Esse é o padrão de produtividade e governança exigido pelo mercado atual: a IA como uma força aceleradora e você no comando da engenharia, da arquitetura e da qualidade.
+Independentemente do seu ponto de partida — seja dando os primeiros passos nesse ecossistema ou aprofundando práticas que você já utiliza no dia a dia —, o aprendizado mais valioso aqui é consolidar esse método: usar a inteligência artificial como uma alavanca de produtividade, mantendo sempre o senso crítico sobre a qualidade e o funcionamento do código.
 
 ---
 
