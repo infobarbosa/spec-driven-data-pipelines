@@ -380,3 +380,49 @@ Abra o arquivo de teste e inspecione o diff gerado:
 2. **Mantenha transformações puras:** Em pipelines Spark, isole computação de I/O. Isso torna os testes de IA instantâneos e baratos.
 3. **Audite os testes da IA:** Provoque falhas deliberadas no código para garantir que a suíte gerada pela IA é rigorosa e não tautológica.
 4. **Trate o `AGENTS.md` como código:** Versionar especificações no Git permite que qualquer membro da equipe (ou agente autônomo) mantenha o sistema com as mesmas premissas de engenharia.
+
+---
+
+## 6. Parabéns!
+
+Você concluiu com sucesso o laboratório de **Spec-Driven Data Pipelines com PySpark e GenAI**!
+
+Nas aulas anteriores de [pyspark-poo](https://github.com/infobarbosa/pyspark-poo), você aprendeu a construir cada camada na unha, entendendo o porquê de cada decisão técnica: schemas explícitos, separação de I/O, classes de transformação puras, injeção de dependências e testes automatizados.
+
+Neste laboratório, você deu o **salto qualitativo para o papel de Tech Lead e Arquiteto**:
+- **Superou o prompt amador:** Viu na prática como a IA sem restrições introduz ordenações não-determinísticas e código acoplado.
+- **Formalizou contratos com Shift-Left:** Transformou regras de negócio, critérios de desempate e schemas em especificações versionadas no `AGENTS.md`.
+- **Governou o processo via Plan Mode:** Forçou a IA a estruturar e aprovar o raciocínio antes de alterar qualquer arquivo de código.
+- **Conquistou testes de alta fidelidade:** Usou a IA para gerar suítes completas de testes unitários em memória com `pytest`, cobrindo múltiplos cenários de aceite em segundos.
+- **Vivenciou o poder da reconciliação:** Atualizou requisitos em produção e viu o pipeline se adaptar de ponta a ponta sem necessidade de reescrever código manualmente.
+
+Esse é o padrão de produtividade e governança exigido pelo mercado atual: a IA como uma força aceleradora e você no comando da engenharia, da arquitetura e da qualidade.
+
+---
+
+## 7. Referências
+
+### Livros
+- **Clean Architecture: A Craftsman's Guide to Software Structure and Design** (Robert C. Martin): Leitura clássica sobre separação de responsabilidades, independência de frameworks e limites arquiteturais.
+- **Designing Data-Intensive Applications** (Martin Kleppmann): Referência definitiva sobre confiabilidade, consistência, contratos de dados e modelos de dados em sistemas distribuídos.
+- **Spark: The Definitive Guide** (Bill Chambers & Matei Zaharia): Guia completo e aprofundado sobre o funcionamento interno do Apache Spark, Catalyst Optimizer e planos de execução.
+- **Clean Code: A Handbook of Agile Software Craftsmanship** (Robert C. Martin): Princípios de clareza, coesão, refatoração contínua e manutenibilidade de código.
+- **Engenharia de Software Moderna** (Marco Tulio Valente): Excelente referência nacional sobre princípios fundamentais de engenharia de software, testes automatizados e design orientado a objetos.
+
+### Metodologia e Desenvolvimento com IA
+- **Spec-Driven Development (SDD):** Adoção de especificações formais (`AGENTS.md`, `.github/copilot-instructions.md`, `.cursorrules`) como contratos de governança para modelos de linguagem.
+- **Plan-First Workflow:** Padrão arquitetural em que agentes de codificação submetem planos estruturados de impacto antes de modificar arquivos do repositório.
+- **Shift-Left em Pipelines de Dados:** Princípio de antecipar a validação de regras de negócio, tipagem estrita e testes automatizados para as etapas iniciais de especificação.
+
+### Documentação Oficial e Ferramentas
+- [Apache Spark — Documentação Oficial](https://spark.apache.org/docs/latest/): Configurações, APIs de DataFrames e SQL, e boas práticas de tuning.
+- [PySpark — API Reference](https://spark.apache.org/docs/latest/api/python/): Referência técnica detalhada de módulos e classes do PySpark.
+- [Pytest — Documentação Oficial](https://docs.pytest.org/): Criação de testes unitários, fixtures e asserções em Python.
+- [Ruff — Linter e Formatador](https://docs.astral.sh/ruff/): Ferramenta de altíssima performance para validação de estilo e qualidade de código Python.
+- [GNU Make Manual](https://www.gnu.org/software/make/manual/): Referência para automação de tarefas e padronização de rotinas de desenvolvimento local.
+
+### Artigos e Blogs Técnicos
+- [Databricks Engineering Blog](https://www.databricks.com/blog/category/engineering): Artigos técnicos aprofundados sobre boas práticas, testes com PySpark e otimização de queries distribuídas.
+- [GitHub Blog — AI & Developer Experience](https://github.blog/): Casos de uso reais, métricas de produtividade e evolução de agentes de inteligência artificial aplicados ao ciclo de vida de desenvolvimento de software.
+- [PEP 8 — Style Guide for Python Code](https://peps.python.org/pep-0008/): Guia oficial de estilo de código para a linguagem Python.
+
